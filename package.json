@@ -1,7 +1,7 @@
 {
   "name": "course-generator-app",
   "version": "1.0.0",
-  
+  "type": "module",
   "scripts": {
     "start": "node server/index.js",
     "install-server": "npm install --prefix server",
