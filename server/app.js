@@ -1,2 +1,2 @@
 // app.js
-import './server/index.js';
+import 'index.js';
