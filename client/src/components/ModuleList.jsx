@@ -21,7 +21,7 @@ export default function ModuleList() {
     try {
       // Step 1: Generate module titles
       const res = await axios.post(
-        'http://localhost:5000/api/generate-titles',
+        '/api/generate-titles',
         { prompt: input },
         getAuthHeader()
       );
@@ -32,7 +32,7 @@ export default function ModuleList() {
 
       // Step 2: Save course to DB
       await axios.post(
-        'http://localhost:5000/api/save-course',
+        '/api/save-course',
         {
           prompt: input,
           modules: modules.map((title) => ({ title, content: '', quiz: '' })),

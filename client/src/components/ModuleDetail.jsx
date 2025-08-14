@@ -80,7 +80,7 @@ export default function ModuleDetail() {
 
   const fetchSavedCourseByPrompt = async (prompt) => {
     try {
-      const res = await axios.get('http://localhost:5000/api/my-courses', {
+      const res = await axios.get('/api/my-courses', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       const courses = res.data.courses || [];
@@ -100,7 +100,7 @@ export default function ModuleDetail() {
   const generateModuleTitles = async (prompt) => {
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/generate-titles',
+        '/api/generate-titles',
         { prompt },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
@@ -165,7 +165,7 @@ export default function ModuleDetail() {
     }
 
     try {
-      const res = await axios.get('http://localhost:5000/api/module-content', {
+      const res = await axios.get('/api/module-content', {
         params: { coursePrompt, moduleTitle: cleanedTitle },
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
@@ -181,7 +181,7 @@ export default function ModuleDetail() {
     } catch {
       try {
         const genRes = await axios.post(
-          'http://localhost:5000/api/generate',
+          '/api/generate',
           { topic: cleanedTitle, coursePrompt },
           { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
         );
@@ -198,7 +198,7 @@ export default function ModuleDetail() {
         setQuizRawText(quizWithMarkdown);
 
         await axios.post(
-          'http://localhost:5000/api/save-module-content',
+          '/api/save-module-content',
           { coursePrompt, moduleTitle: cleanedTitle, content: mainWithMarkdown, quiz: quizWithMarkdown },
           { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
         );

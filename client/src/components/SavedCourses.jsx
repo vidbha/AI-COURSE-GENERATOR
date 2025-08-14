@@ -13,7 +13,7 @@ export default function SavedCourses() {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/my-courses', {
+      const res = await axios.get('/api/my-courses', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setCourses(res.data.courses || []);
@@ -78,7 +78,7 @@ export default function SavedCourses() {
   const deleteCourse = async (idxToDelete) => {
     if (!window.confirm('Are you sure you want to delete this course?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/delete-course/${idxToDelete}`, {
+      await axios.delete(`/api/delete-course/${idxToDelete}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setCourses(prev => prev.filter((_, idx) => idx !== idxToDelete));
