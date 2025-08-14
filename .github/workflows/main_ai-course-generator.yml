@@ -29,11 +29,16 @@ jobs:
           npm run build --if-present
           npm run test --if-present
       
+      # --- THIS IS THE CORRECTED STEP ---
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: |
+            .
+            !node_modules/
+            !client/node_modules/
+            !server/node_modules/
 
   deploy:
     runs-on: ubuntu-latest
