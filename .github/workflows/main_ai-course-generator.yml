@@ -24,11 +24,11 @@ jobs:
           node-version: '20.x'
 
       # --- THIS IS THE CORRECTED STEP ---
-      - name: Install dependencies and build client
+      # It now uses the scripts from your root package.json
+      - name: Install dependencies and build
         run: |
-          npm install --prefix server
-          npm install --prefix client
-          npm run build --prefix client
+          npm install
+          npm run build
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
