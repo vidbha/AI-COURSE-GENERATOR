@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy Node.js app to Azure Web App - AI-COURSE-GENERATOR
 
 on:
@@ -8,32 +11,29 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Use Linux for a more stable build environment
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read #This is required for actions/checkout
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
 
-      - name: Install dependencies and build client
+      - name: npm install, build, and test
         run: |
-          npm install --prefix server
-          npm install --prefix client
-          npm run build --prefix client
-      
+          npm install
+          npm run build --if-present
+          npm run test --if-present
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: |
-            .
-            !node_modules/
-            !client/node_modules/
-            !server/node_modules/
+          path: .
 
   deploy:
     runs-on: ubuntu-latest
@@ -46,10 +46,10 @@ jobs:
           name: node-app
       
       - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
         with:
           app-name: 'AI-COURSE-GENERATOR'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_AE78CD965AAE428D943556215B1A51CC }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1E0ACC63DC3546588381772329DBEB67 }}
