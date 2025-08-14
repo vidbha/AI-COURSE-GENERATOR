@@ -8,20 +8,22 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Switched to Linux for a more stable build
+    runs-on: ubuntu-latest # Use Linux for a more stable build environment
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
 
-      - name: Install dependencies and build
+      - name: Install dependencies and build client
         run: |
-          npm install
-          npm run build
+          npm install --prefix server
+          npm install --prefix client
+          npm run build --prefix client
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
