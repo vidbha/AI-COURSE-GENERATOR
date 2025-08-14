@@ -1,0 +1,17 @@
+{
+  "name": "course-generator-app",
+  "version": "1.0.0",
+  
+  "scripts": {
+    "start": "node server/index.js",
+    "install-server": "npm install --prefix server",
+    "install-client": "npm install --prefix client",
+    "install": "npm run install-server && npm run install-client",
+    "build": "npm run build --prefix client"
+  }
+,
+  "dependencies": {
+    "sequelize": "^6.37.7",
+    "tedious": "^18.6.1"
+  }
+}
