@@ -14,7 +14,7 @@ export default function SavedCourses() {
     setLoading(true);
     try {
       const res = await axios.get('/api/my-courses', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` },
       });
       setCourses(res.data.courses || []);
     } catch (err) {
@@ -79,7 +79,7 @@ export default function SavedCourses() {
     if (!window.confirm('Are you sure you want to delete this course?')) return;
     try {
       await axios.delete(`/api/delete-course/${idxToDelete}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` },
       });
       setCourses(prev => prev.filter((_, idx) => idx !== idxToDelete));
     } catch (err) {

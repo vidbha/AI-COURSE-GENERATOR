@@ -11,7 +11,7 @@ export default function ModuleList() {
   const { setModules, setPrompt } = useModuleContext();
 
   const getAuthHeader = () => ({
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` },
   });
 
   const handleGenerate = async () => {

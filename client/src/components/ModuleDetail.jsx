@@ -81,7 +81,7 @@ export default function ModuleDetail() {
   const fetchSavedCourseByPrompt = async (prompt) => {
     try {
       const res = await axios.get('/api/my-courses', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` },
       });
       const courses = res.data.courses || [];
       const match = courses.find(c => String(c.prompt).trim() === String(prompt).trim());
@@ -102,7 +102,7 @@ export default function ModuleDetail() {
       const res = await axios.post(
         '/api/generate-titles',
         { prompt },
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+        { headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` } }
       );
       if (Array.isArray(res.data.modules) && res.data.modules.length) {
         return res.data.modules.map(String);
@@ -167,7 +167,7 @@ export default function ModuleDetail() {
     try {
       const res = await axios.get('/api/module-content', {
         params: { coursePrompt, moduleTitle: cleanedTitle },
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` },
       });
 
       if (res.data?.content) {
@@ -183,7 +183,7 @@ export default function ModuleDetail() {
         const genRes = await axios.post(
           '/api/generate',
           { topic: cleanedTitle, coursePrompt },
-          { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+          { headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` } }
         );
 
         let fullText = genRes.data.generatedText || genRes.data.text || '';
@@ -200,7 +200,7 @@ export default function ModuleDetail() {
         await axios.post(
           '/api/save-module-content',
           { coursePrompt, moduleTitle: cleanedTitle, content: mainWithMarkdown, quiz: quizWithMarkdown },
-          { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+          { headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` } }
         );
       } catch (err) {
         console.error('Generation/save failed:', err);
