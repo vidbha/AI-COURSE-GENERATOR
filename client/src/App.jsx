@@ -11,23 +11,15 @@ import { ModuleProvider } from './components/ModuleContext';
 import NavBar from './components/navbar';
 import Footer from './components/footer';
 import { AuthProvider } from './components/AuthContext';
+// FIX: Import your route guards from their files
+import PublicRoute from './components/PublicRoute';
+import ProtectedRoute from './components/ProtectedRoute';
 
-// Route guard for protected pages
-function PrivateRoute({ children }) {
-  const token = sessionStorage.getItem('token'); // <-- CHANGE HERE
-  return token ? children : <Navigate to="/login" replace />;
-}
-
-// Route guard for public pages (redirect if already logged in)
-function PublicRoute({ children }) {
-  const token = sessionStorage.getItem('token'); // <-- CHANGE HERE
-  return token ? <Navigate to="/dashboard" replace /> : children;
-}
 
 // Layout wrapper (must be inside Router to use useLocation)
 function LayoutWithNavAndFooter({ children }) {
   const location = useLocation();
-  const noPromptPaths = ['/', '/login'];
+  const noPromptPaths = ['/', '/login', '/register'];
   const showPromptBox = !noPromptPaths.includes(location.pathname);
 
   return (
@@ -48,23 +40,18 @@ function App() {
         const response = await fetch('/api/health');
         if (response.ok) {
           setIsServerReady(true);
-          return true; // Server is ready
+          return true;
         }
-      } catch (error) {
-        // Server is not ready, do nothing and let the interval retry
-      }
-      return false; // Server is not ready
+      } catch (error) { /* do nothing */ }
+      return false;
     };
-
     checkServerStatus().then(ready => {
       if (!ready) {
         const intervalId = setInterval(async () => {
-          const isReady = await checkServerStatus();
-          if (isReady) {
+          if (await checkServerStatus()) {
             clearInterval(intervalId);
           }
         }, 3000);
-
         return () => clearInterval(intervalId);
       }
     });
@@ -85,39 +72,16 @@ function App() {
         <Router>
           <LayoutWithNavAndFooter>
             <Routes>
-              {/* Public routes */}
-              <Route
-                path="/"
-                element={
-                  <PublicRoute>
-                    <Register />
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path="/login"
-                element={
-                  <PublicRoute>
-                    <Login />
-                  </PublicRoute>
-                }
-              />
+              {/* FIX: Using the imported Route Guards */}
+              <Route path="/" element={ <PublicRoute> <Register /> </PublicRoute> } />
+              <Route path="/login" element={ <PublicRoute> <Login /> </PublicRoute> } />
 
-              {/* Protected dashboard */}
-              <Route
-                path="/dashboard"
-                element={
-                  <PrivateRoute>
-                    <DashboardLayout />
-                  </PrivateRoute>
-                }
-              >
+              <Route path="/dashboard" element={ <ProtectedRoute> <DashboardLayout /> </ProtectedRoute> } >
                 <Route index element={<ModuleList />} />
                 <Route path="module/:title" element={<ModuleDetail />} />
                 <Route path="my-courses" element={<SavedCourses />} />
               </Route>
 
-              {/* Catch-all */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </LayoutWithNavAndFooter>
