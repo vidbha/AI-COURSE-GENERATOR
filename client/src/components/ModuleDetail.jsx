@@ -19,7 +19,7 @@ const cleanupMarkdown = (text) => {
     return cleanedText.trim();
 };
 
-// REMOVED `stripMarkdownForQuiz` as it's no longer needed.
+// ModuleDetail component
 
 export default function ModuleDetail() {
   const { title } = useParams();
@@ -54,7 +54,7 @@ export default function ModuleDetail() {
     };
   }, []);
 
-  // ... (normalizeModulesObj, fetchSavedCourseByPrompt, generateModuleTitles remain the same) ...
+  // ... (normalizeModulesObj, fetchSavedCourseByPrompt, generateModuleTitles) ...
   const normalizeModulesObj = (course) => {
     if (!course) return [];
     if (course.modules_full && Array.isArray(course.modules_full) && course.modules_full.length) {

@@ -8,7 +8,7 @@ export default function NavBar({ showPromptBox = false }) {
   const location = useLocation();
   const { token, logout } = useAuth(); // reactive token from context
 
-  // hide prompt box on these paths (optional)
+  // hide prompt box on these paths 
   const noPromptPaths = ['/', '/login'];
   const canShowPrompt = token && !noPromptPaths.includes(location.pathname);
 

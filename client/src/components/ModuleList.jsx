@@ -84,7 +84,7 @@ export default function ModuleList() {
 
       <div className="max-w-3xl mx-auto z-10 relative bg-blue-950 bg-opacity-80 rounded-xl shadow-2xl p-8 border border-blue-800">
         <h1 className="text-4xl font-extrabold mb-6 text-center text-blue-200 drop-shadow-lg">
-          🚀 AI Course Generator
+          📖 AI Course Generator
         </h1>
 
         <div className="flex flex-col gap-3 mb-6">

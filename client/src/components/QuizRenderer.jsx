@@ -60,13 +60,13 @@ function extractOptionsAndAnswer(block) {
   
   let answerText = null;
   
-  // --- CHANGE #1: Improved Regex to find the answer line, ignoring leading asterisks ---
+  //  Regex to find the answer line, ignoring leading asterisks ---
   const answerLineIdx = originalLines.findIndex(l => /^\**\s*Answer\s*[:\-]/i.test(l.trim()));
 
   if (answerLineIdx >= 0) {
     const al = originalLines.splice(answerLineIdx, 1)[0];
     const m = al.match(/Answer\s*[:\-]?\s*(.+)/i);
-    // --- CHANGE #2: Clean up the extracted answer text from markdown characters ---
+    // Clean up the extracted answer text from markdown characters ---
     answerText = m ? m[1].trim().replace(/[.)*]+$/, '').trim() : '';
   }
 

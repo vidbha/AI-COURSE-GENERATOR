@@ -204,7 +204,7 @@ app.post('/api/generate-content', authMiddleware, async (req, res) => {
 
   try {
     const text = await generateWithFallback([
-      `For the course on "${prompt}", write detailed notes for the module titled "${title}". Include explanations and examples. At the end, generate 5 multiple-choice quiz questions on that detailed notes,  give it heading as "Quiz Questions:" , and give 4 options each, and indicate the correct answer in this format:
+ `For the course on "${prompt}" ,Write detailed notes for the module titled "${topic}" Don't give any heading of this topic. Include explanations and examples. At the end, generate 5 multiple-choice quiz questions on that detailed notes, give it heading as "Quiz Questions:" and  give 4 options each and  indicate the correct answer in this format:
 
 Question: ...
 Options:
@@ -234,7 +234,7 @@ app.post('/api/generate', authMiddleware, async (req, res) => {
 
   try {
     const generatedText = await generateWithFallback([
-      `Write detailed notes for the module titled "${topic}" Don't give any heading of this topic. Include explanations and examples. At the end, generate 5 multiple-choice quiz questions on that detailed notes, give it heading as "Quiz Questions:" and  give 4 options each and  indicate the correct answer in this format:
+      `For the course on "${prompt}" ,Write detailed notes for the module titled "${topic}" Don't give any heading of this topic. Include explanations and examples. At the end, generate 5 multiple-choice quiz questions on that detailed notes, give it heading as "Quiz Questions:" and  give 4 options each and  indicate the correct answer in this format:
 
 Question: ...
 Options:
@@ -348,6 +348,12 @@ app.get('/api/my-courses', authMiddleware, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch courses' });
   }
 });
+// added this api to check server status
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 
 // -------------------------
 // Get specific module content if already saved
@@ -407,8 +413,7 @@ app.delete('/api/delete-course/:index', authMiddleware, async (req, res) => {
 
 // +++ START: SERVE REACT APP +++
 // This section must go AFTER all your API routes but BEFORE app.listen().
-
-// Based on your build logs, your 'dist' folder is inside the 'server' directory.
+// Serve static files from the React app
 const buildPath = path.join(__dirname, 'dist');
 
 // Serve static files (e.g., js, css) from the React build folder

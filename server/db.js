@@ -1,6 +1,6 @@
 // db.js
 import dotenv from 'dotenv';
-dotenv.config(); // <-- ensure env is loaded here (important for ESM import order)
+dotenv.config(); // <-- ensuring env is loaded here (important for ESM import order)
 
 import { Sequelize } from 'sequelize';
 

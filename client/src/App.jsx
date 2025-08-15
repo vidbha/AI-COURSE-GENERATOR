@@ -1,4 +1,5 @@
 // src/App.jsx
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Login from './Login';
 import Register from './Register';
@@ -13,13 +14,13 @@ import { AuthProvider } from './components/AuthContext';
 
 // Route guard for protected pages
 function PrivateRoute({ children }) {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token'); // <-- CHANGE HERE
   return token ? children : <Navigate to="/login" replace />;
 }
 
 // Route guard for public pages (redirect if already logged in)
 function PublicRoute({ children }) {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token'); // <-- CHANGE HERE
   return token ? <Navigate to="/dashboard" replace /> : children;
 }
 
@@ -39,6 +40,45 @@ function LayoutWithNavAndFooter({ children }) {
 }
 
 function App() {
+  const [isServerReady, setIsServerReady] = useState(false);
+
+  useEffect(() => {
+    const checkServerStatus = async () => {
+      try {
+        const response = await fetch('/api/health');
+        if (response.ok) {
+          setIsServerReady(true);
+          return true; // Server is ready
+        }
+      } catch (error) {
+        // Server is not ready, do nothing and let the interval retry
+      }
+      return false; // Server is not ready
+    };
+
+    checkServerStatus().then(ready => {
+      if (!ready) {
+        const intervalId = setInterval(async () => {
+          const isReady = await checkServerStatus();
+          if (isReady) {
+            clearInterval(intervalId);
+          }
+        }, 3000);
+
+        return () => clearInterval(intervalId);
+      }
+    });
+  }, []);
+
+  if (!isServerReady) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-gray-700">
+        <h1 className="text-2xl font-semibold">Connecting to Server...</h1>
+        <p className="mt-2">This may take a moment if the application is waking up.</p>
+      </div>
+    );
+  }
+
   return (
     <AuthProvider>
       <ModuleProvider>
