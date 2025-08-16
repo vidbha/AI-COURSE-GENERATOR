@@ -204,7 +204,7 @@ app.post('/api/generate-content', authMiddleware, async (req, res) => {
 
   try {
     const text = await generateWithFallback([
- `For the course on "${prompt}" ,Write detailed notes for the module titled "${topic}" Don't give any heading of this topic. Include explanations and examples. At the end, generate 5 multiple-choice quiz questions on that detailed notes, give it heading as "Quiz Questions:" and  give 4 options each and  indicate the correct answer in this format:
+ `For the course on "${prompt}" ,Write detailed notes for the module titled "${title}" Don't give any heading of this topic. Include explanations and examples. At the end, generate 5 multiple-choice quiz questions on that detailed notes, give it heading as "Quiz Questions:" and  give 4 options each and  indicate the correct answer in this format:
 
 Question: ...
 Options:
@@ -234,7 +234,7 @@ app.post('/api/generate', authMiddleware, async (req, res) => {
 
   try {
     const generatedText = await generateWithFallback([
-      `For the course on "${prompt}" ,Write detailed notes for the module titled "${topic}" Don't give any heading of this topic. Include explanations and examples. At the end, generate 5 multiple-choice quiz questions on that detailed notes, give it heading as "Quiz Questions:" and  give 4 options each and  indicate the correct answer in this format:
+      `For the course on "${coursePrompt}" ,Write detailed notes for the module titled "${topic}" Don't give any heading of this topic. Include explanations and examples. At the end, generate 5 multiple-choice quiz questions on that detailed notes, give it heading as "Quiz Questions:" and  give 4 options each and  indicate the correct answer in this format:
 
 Question: ...
 Options:
