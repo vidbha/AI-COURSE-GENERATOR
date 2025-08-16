@@ -153,63 +153,77 @@ export default function ModuleDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coursePrompt, contextModules]);
 
-  const fetchOrGenerateContent = async () => {
-    setContent('');
-    setQuizRawText('');
-    setLoading(true);
+const fetchOrGenerateContent = async () => {
+  setContent('');
+  setQuizRawText('');
+  setLoading(true);
 
-    if (!coursePrompt) {
-      setContent('⚠️ Course context missing.');
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    // If there's no token, the user is not logged in. Redirect them.
+    navigate('/login');
+    return;
+  }
+
+  if (!coursePrompt) {
+    setContent('⚠️ Course context missing.');
+    setLoading(false);
+    return;
+  }
+
+  try {
+    const res = await axios.get('/api/module-content', {
+      params: { coursePrompt, moduleTitle: cleanedTitle },
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (res.data?.content) {
+      setContent(cleanupMarkdown(res.data.content));
+      setQuizRawText(res.data.quiz || '');
       setLoading(false);
       return;
     }
-
+    throw new Error('No existing content');
+  } catch (err) {
+    // If fetching saved content fails (e.g., 404), try to generate it.
+    // If it fails for another reason (e.g., 403 Forbidden), the next catch will handle it.
     try {
-      const res = await axios.get('/api/module-content', {
-        params: { coursePrompt, moduleTitle: cleanedTitle },
-        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` },
-      });
+      const genRes = await axios.post(
+        '/api/generate',
+        { topic: cleanedTitle, coursePrompt },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-      if (res.data?.content) {
-        setContent(cleanupMarkdown(res.data.content));
-        // Pass the raw markdown quiz text directly
-        setQuizRawText(res.data.quiz || '');
-        setLoading(false);
-        return;
-      }
-      throw new Error('No existing content');
-    } catch {
-      try {
-        const genRes = await axios.post(
-          '/api/generate',
-          { topic: cleanedTitle, coursePrompt },
-          { headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` } }
-        );
+      let fullText = genRes.data.generatedText || genRes.data.text || '';
+      const quizStartRegex = /(Quiz Questions:|🧠\s*quiz|##\s*quiz)/i;
+      const idx = fullText.search(quizStartRegex);
 
-        let fullText = genRes.data.generatedText || genRes.data.text || '';
-        const quizStartRegex = /(Quiz Questions:|🧠\s*quiz|##\s*quiz)/i;
-        const idx = fullText.search(quizStartRegex);
+      let mainWithMarkdown = idx !== -1 ? fullText.slice(0, idx).trim() : fullText;
+      let quizWithMarkdown = idx !== -1 ? fullText.slice(idx).trim() : '';
 
-        let mainWithMarkdown = idx !== -1 ? fullText.slice(0, idx).trim() : fullText;
-        let quizWithMarkdown = idx !== -1 ? fullText.slice(idx).trim() : '';
-        
-        // Pass raw markdown quiz text directly
-        setContent(cleanupMarkdown(mainWithMarkdown));
-        setQuizRawText(quizWithMarkdown);
+      setContent(cleanupMarkdown(mainWithMarkdown));
+      setQuizRawText(quizWithMarkdown);
 
-        await axios.post(
-          '/api/save-module-content',
-          { coursePrompt, moduleTitle: cleanedTitle, content: mainWithMarkdown, quiz: quizWithMarkdown },
-          { headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` } }
-        );
-      } catch (err) {
-        console.error('Generation/save failed:', err);
+      // Save the newly generated content
+      await axios.post(
+        '/api/save-module-content',
+        { coursePrompt, moduleTitle: cleanedTitle, content: mainWithMarkdown, quiz: quizWithMarkdown },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } catch (generationError) {
+      console.error('Generation/save failed:', generationError);
+      // If the error is an authentication error (401 or 403), redirect to login.
+      if (generationError.response?.status === 401 || generationError.response?.status === 403) {
+        alert('Your session has expired. Please log in again.');
+        navigate('/login');
+      } else {
         setContent('⚠️ Failed to load or generate module content.');
-      } finally {
-        setLoading(false);
       }
+    } finally {
+      setLoading(false);
     }
-  };
+  }
+};
 
   useEffect(() => {
     window.scrollTo(0, 0);
