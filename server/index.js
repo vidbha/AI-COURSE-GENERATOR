@@ -15,7 +15,8 @@ import { fileURLToPath } from 'url';
 
 // Import sequelize/models after dotenv.config()
 import { sequelize, User, Course, Module } from './models/User.js';
-
+// --- Database Status Tracking ---
+let isDbConnected = false;
 const app = express();
 app.use(cors({ origin: process.env.CLIENT_ORIGIN || '*' }));
 app.use(express.json());
@@ -351,7 +352,11 @@ app.get('/api/my-courses', authMiddleware, async (req, res) => {
 // added this api to check server status
 
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'ok' });
+  if (isDbConnected) {
+    res.status(200).json({ status: 'ok', database: 'connected' });
+  } else {
+    res.status(503).json({ status: 'error', database: 'connecting' });
+  }
 });
 
 
