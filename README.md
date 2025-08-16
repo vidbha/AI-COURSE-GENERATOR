@@ -11,8 +11,6 @@ A full-stack web application that leverages the Google Gemini API to dynamically
 
 ---
 
-![AI Course Generator Screenshot](https://i.imgur.com/your-screenshot-url.png) 
-*(Suggestion: Take a screenshot of your app's dashboard and upload it to a site like Imgur, then replace the URL above.)*
 
 ## ✨ Features
 
