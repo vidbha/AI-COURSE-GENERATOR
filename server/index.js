@@ -40,14 +40,17 @@ const MODEL = 'gemini-1.5-flash';
 const JWT_SECRET = process.env.JWT_SECRET || 'secret123';
 
 // Connect & sync DB (run immediately)
+// Connect & sync DB (run immediately)
 (async () => {
   try {
     console.log('Connecting to DB...');
     await sequelize.authenticate();
     console.log('✅ Database connection established');
-    // create tables if they don't exist
     await sequelize.sync();
     console.log('✅ Models synchronized');
+    // --- Update Database Status ---
+    isDbConnected = true; // Set flag to true only after successful connection
+    console.log('✅ Database is ready.');
   } catch (err) {
     console.error('❌ DB connection / sync error:', err && err.message ? err.message : err);
   }
@@ -351,10 +354,13 @@ app.get('/api/my-courses', authMiddleware, async (req, res) => {
 });
 // added this api to check server status
 
+// Smarter Health Check API
 app.get('/api/health', (req, res) => {
   if (isDbConnected) {
+    // If DB is ready, send 200 OK
     res.status(200).json({ status: 'ok', database: 'connected' });
   } else {
+    // If DB is not ready, send 503 Service Unavailable
     res.status(503).json({ status: 'error', database: 'connecting' });
   }
 });
