@@ -204,7 +204,7 @@ export default function QuizRenderer({ quizText }) {
                 })}
               </div>
               ) :   (
-                <div className="text-blue-200 italic mt-2">No options available for this question.</div>
+                <div className="text-blue-200 italic mt-2">options</div>
               )}
             </div>
             );
