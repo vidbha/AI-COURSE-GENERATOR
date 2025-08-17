@@ -38,9 +38,7 @@ if (!GEMINI_KEYS.length && process.env.GEMINI_API_KEY) {
 
 const MODEL = 'gemini-1.5-flash';
 const JWT_SECRET = process.env.JWT_SECRET || 'secret123';
-
-// Connect & sync DB (run immediately)
-// Connect & sync DB (run immediately)
+// Connect & sync DB, then start server
 (async () => {
   try {
     console.log('Connecting to DB...');
@@ -48,11 +46,17 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret123';
     console.log('✅ Database connection established');
     await sequelize.sync();
     console.log('✅ Models synchronized');
-    // --- Update Database Status ---
-    isDbConnected = true; // Set flag to true only after successful connection
+    
+    isDbConnected = true;
     console.log('✅ Database is ready.');
+
+    // --- START SERVER ONLY AFTER DB IS READY ---
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
+
   } catch (err) {
-    console.error('❌ DB connection / sync error:', err && err.message ? err.message : err);
+    console.error('❌ FATAL: DB connection / sync error. Server not started.', err);
+    isDbConnected = false;
   }
 })();
 
