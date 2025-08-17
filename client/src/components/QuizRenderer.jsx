@@ -162,67 +162,7 @@ export default function QuizRenderer({ quizText }) {
           const correctIdx = (typeof q.correctIndex === 'number') ? q.correctIndex : null;
           const correctText = q.correctText || null;
 
-            return (
-            <div key={i} className="mb-6">
-              <div className="font-semibold mb-3 text-blue-100">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw]}
-                components={{
-                p: ({node, ...props}) => <span {...props} />,
-                code: CodeBlock,
-                }}
-              >
-                {`${i + 1}. ${q.question}`}
-              </ReactMarkdown>
-              </div>
-
-              {hasOptions ? (
-              <div className="space-y-2">
-                {q.options.map((opt, j) => {
-                const selected = userChoice === j;
-                const isCorrect = (submitted && correctIdx === j);
-                const isWrongSelected = (submitted && selected && correctIdx !== null && correctIdx !== j);
-                const matchByText = !isCorrect && submitted && correctText && opt.toLowerCase().includes(correctText.toLowerCase());
-                return (
-                  <button
-                  key={j}
-                  onClick={() => select(i, j)}
-                  disabled={submitted}
-                  className={`w-full text-left px-4 py-2 border rounded transition
-                    ${isCorrect ? 'bg-green-600 border-green-500 text-white' : ''}
-                    ${isWrongSelected ? 'bg-red-600 border-red-500 text-white' : ''}
-                    ${!isCorrect && !isWrongSelected && selected ? 'bg-violet-500 border-violet-500 text-white' : ''}
-                    ${!isCorrect && !isWrongSelected && !selected ? 'bg-blue-900 border-blue-700 hover:bg-blue-800 text-blue-100' : ''}
-                    ${matchByText ? 'bg-green-600 border-green-500 text-white' : ''}
-                    ${submitted ? 'cursor-not-allowed' : ''}
-                  `}
-                  >
-                  <strong className="mr-2">{String.fromCharCode(65 + j)}.</strong> {opt}
-                  </button>
-                );
-                })}
-              </div>
-              ) : (
-              <>
-                <p className="mb-2 text-blue-200 italic text-sm">This question has no multiple-choice options.</p>
-                {!submitted && !revealMap[i] && (
-                <button onClick={() => revealAnswer(i)} className="px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white font-semibold">
-                  Reveal Answer
-                </button>
-                )}
-                {(submitted || revealMap[i]) && (
-                <div className="mt-3 p-3 bg-blue-900 rounded text-blue-100">
-                  <strong>Answer:</strong>
-                  <div className="mt-1">
-                  {q.correctText || 'Answer not provided.'}
-                  </div>
-                </div>
-                )}
-              </>
-              )}
-            </div>
-            );
+            // Removed question rendering section as requested.
         })}
 
         <div className="mt-6 border-t border-blue-800 pt-4">
