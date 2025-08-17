@@ -356,15 +356,20 @@ app.get('/api/my-courses', authMiddleware, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch courses' });
   }
 });
-// added this api to check server status
 
-// Smarter Health Check API
-app.get('/api/health', (req, res) => {
-  if (isDbConnected) {
-    // If DB is ready, send 200 OK
+
+// In server/index.js
+
+//  health check that performs a live database query
+app.get('/api/health', async (req, res) => {
+  try {
+    // Perform a simple, fast query to ensure the database is truly ready.
+    await sequelize.query('SELECT 1');
+    // If the query succeeds, send a 200 OK status.
     res.status(200).json({ status: 'ok', database: 'connected' });
-  } else {
-    // If DB is not ready, send 503 Service Unavailable
+  } catch (error) {
+    // If the query fails, it means the DB is not ready.
+    console.error('Health check failed, database not ready:', error.message);
     res.status(503).json({ status: 'error', database: 'connecting' });
   }
 });
