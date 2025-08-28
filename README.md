@@ -46,3 +46,8 @@ A full-stack web application that leverages the Google Gemini API to dynamically
 - **Deployment:**
   - Microsoft Azure App Service (Linux)
   - CI/CD with GitHub Actions
+
+
+
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
