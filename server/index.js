@@ -36,7 +36,7 @@ if (!GEMINI_KEYS.length && process.env.GEMINI_API_KEY) {
   GEMINI_KEYS.push(process.env.GEMINI_API_KEY);
 }
 
-const MODEL = 'gemini-pro';
+const MODEL = 'gemini-2.5-flash';
 const JWT_SECRET = process.env.JWT_SECRET || 'secret123';
 // Connect & sync DB, then start server
 (async () => {
